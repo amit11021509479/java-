@@ -1,0 +1,84 @@
+/*Ques - Create a Java program to serialize and deserialize a Student object
+
+Ans --   */
+
+import java.io.*;  
+import java.util.*;
+
+class Student implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    String name;
+    int rollNumber;
+    double marks;
+
+    public Student(String name, int rollNumber, double marks) {
+        this.name = name;
+        this.rollNumber = rollNumber;
+        this.marks = marks;
+    }
+
+    public void display() {
+        System.out.println("Name: " + name);
+        System.out.println("Roll Number: " + rollNumber);
+        System.out.println("Marks: " + marks);
+    }
+}
+
+public class Exxp5 {
+    private static final String FILE_NAME = "students.ser";
+
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("Alice", 101, 95.5));
+        students.add(new Student("Karan", 132, 100));
+        students.add(new Student("John", 150, 92.5));
+
+        serializeStudents(students);  
+        List<Student> deserializedStudents = deserializeStudents();  
+
+        System.out.println("\nDeserialized Students:");
+        for (Student student : deserializedStudents) {
+            student.display();
+            System.out.println("---------------------");
+        }
+    }
+
+    public static void serializeStudents(List<Student> students) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            out.writeObject(students);  
+            System.out.println("Students saved successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Student> deserializeStudents() {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            return (List<Student>) in.readObject();  
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+}
+
+
+/* OUTPUT -- 
+
+Students saved successfully!
+
+Deserialized Students:
+Name: Alice
+Roll Number: 101
+Marks: 95.5
+---------------------
+Name: Karan
+Roll Number: 132
+Marks: 100.0
+---------------------
+Name: John
+Roll Number: 150
+Marks: 92.5
+---------------------  */
